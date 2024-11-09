@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>mLoRA Landing Page</title>
+    <style>
+      /* CSS Reset to remove default margins and paddings */
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      html,
+      body {
+        height: 100%;
+        width: 100%;
+      }
+
+      body {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background-color: #1b1b35; /* Match the main app's background color */
+        color: #ffffff;
+        font-family: Avenir, Helvetica, Arial, sans-serif;
+        overflow-x: hidden; /* Prevent horizontal scrolling */
+      }
+    </style>
+  </head>
+  <body>
+    <div id="app"></div>
+    <!-- Include your bundled JavaScript file here -->
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>
