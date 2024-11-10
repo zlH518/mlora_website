@@ -107,7 +107,7 @@ export default defineComponent({
   width: 1200px;
   height: 800px;
   border-radius: 20px;
-  background: linear-gradient(180deg, #6744f4, #413ca8);
+  background: linear-gradient(180deg, hsl(259, 89%, 61%), #413ca8);
   z-index: 3;
 }
 </style>

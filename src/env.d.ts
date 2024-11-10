@@ -17,3 +17,6 @@ declare module '@/views/App.vue' {
 declare module '@/utils/GlowingGlobe' {
   export function initGlowingGlobe(container: HTMLElement): void
 }
+declare module '@/src/utils/GeometricGlobeAnimation' {
+  export function initGeometricGlobe(container: HTMLElement): void
+}
