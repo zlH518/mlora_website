@@ -421,9 +421,7 @@ export function initNeuralNetworkAnimation() {
           tooltip.style.top = `${point.y + rect.top - tooltip.offsetHeight - 10}px`
           tooltip.style.display = 'block'
           tooltip.innerText = point.name ? point.name : 'Hard luck, try again!'
-          tooltip.style.background = point.name
-            ? 'rgba(65, 60, 168, 0.6)'
-            : 'rgba(255, 77, 77, 0.6)' // Red for incorrect, purple for correct
+          tooltip.style.background = point.name ? 'rgba(65, 60, 168, 0.6)' : '#413ca8' // Red for incorrect, purple for correct
           found = true
           break
         }
@@ -448,8 +446,8 @@ export function initNeuralNetworkAnimation() {
   function shiftPoint(point: Point) {
     TweenLite.to(point, 1.5 + 3 * Math.random(), {
       // Increased duration for more exaggerated effect
-      x: getRandomInt(point.originX - 15, point.originX + 15), // Increased range
-      y: getRandomInt(point.originY - 15, point.originY + 15), // Increased range
+      x: getRandomInt(point.originX - 50, point.originX + 50), // Increased range
+      y: getRandomInt(point.originY - 10, point.originY + 10), // Increased range
       ease: Circ.easeInOut, // Smooth transition with bounce effect
       onComplete: () => shiftPoint(point),
     })

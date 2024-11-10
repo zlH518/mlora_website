@@ -28,7 +28,7 @@ export default defineComponent({
 
 <style scoped>
 .team-page {
-  background-color: rgba(16, 16, 34, 0.95);
+  background-color: #0a0a23;
   color: #ffffff;
   height: 1000px; /* Set fixed height for the page */
   display: flex;
