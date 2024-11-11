@@ -20,3 +20,6 @@ declare module '@/utils/GlowingGlobe' {
 declare module '@/src/utils/GeometricGlobeAnimation' {
   export function initGeometricGlobe(container: HTMLElement): void
 }
+declare module '@/views/Card.vue' {
+  export function defineComponent(container: HTMLElement): void
+}

@@ -405,6 +405,7 @@ export function initNeuralNetworkAnimation() {
       const mouseX = event.clientX - rect.left
       const mouseY = event.clientY - rect.top
       let found = false
+      let selectedNode: Point | null = null
 
       for (let point of points) {
         const dist = Math.sqrt((mouseX - point.x) ** 2 + (mouseY - point.y) ** 2)

@@ -38,7 +38,7 @@ export default defineComponent({
   overflow: hidden;
   text-align: center;
   width: 100vw;
-  padding-top: 200px; /* Push content below the navbar */
+  padding-top: 300px; /* Push content below the navbar */
   position: relative;
   z-index: 1;
 }

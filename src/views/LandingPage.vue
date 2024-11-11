@@ -1,6 +1,8 @@
 <template>
   <div id="mlora-app" class="landing-page">
     <div class="globe-container" ref="globeContainer"></div>
+
+    <!-- Hero Section -->
     <div class="hero-section">
       <div class="hero-content">
         <h1>Effortless Fine-Tuning with mLoRA</h1>
@@ -9,7 +11,11 @@
       <div class="hero-image">
         <img src="@/assets/mlora_llama_image.png" alt="mLoRA Llama Illustration" />
       </div>
-      <div class="glowing-box"></div>
+    </div>
+
+    <!-- Glowing Box with Files Card -->
+    <div class="glowing-box">
+      <FilesCard />
     </div>
   </div>
 </template>
@@ -17,9 +23,13 @@
 <script lang="ts">
 import { defineComponent, onMounted, ref } from 'vue'
 import { initGlowingGlobe } from '@/utils/GlowingGlobe'
+import FilesCard from '@/components/FilesCard.vue' // Import FilesCard component
 
 export default defineComponent({
   name: 'LandingPage',
+  components: {
+    FilesCard, // Register FilesCard component
+  },
   setup() {
     const globeContainer = ref<HTMLElement | null>(null)
 
@@ -100,14 +110,21 @@ export default defineComponent({
 }
 
 .glowing-box {
+  display: flex;
+  align-items: flex-start; /* Align items to the top */
+  justify-content: flex-start; /* Align items to the left */
+  flex-wrap: wrap;
+  gap: 1.5rem;
   position: absolute;
-  top: 124%; /* Adjust to align the box with llama's stomach */
+  top: 110%; /* Adjust to align the box with llama's stomach */
   left: 50%;
   transform: translate(-50%, -50%);
   width: 1200px;
   height: 800px;
   border-radius: 20px;
-  background: linear-gradient(180deg, hsl(259, 89%, 61%), #413ca8);
+  background: linear-gradient(180deg, hsl(253, 69%, 17%), #413ca8);
+  padding: 2rem;
+  box-shadow: 0 0 20px rgba(108, 99, 255, 0.4);
   z-index: 3;
 }
 </style>
