@@ -116,11 +116,11 @@ export default defineComponent({
   flex-wrap: wrap;
   gap: 1.5rem;
   position: absolute;
-  top: 110%; /* Adjust to align the box with llama's stomach */
+  top: 187%; /* Adjust to align the box with llama's stomach */
   left: 50%;
   transform: translate(-50%, -50%);
   width: 1200px;
-  height: 800px;
+  height: 2000px;
   border-radius: 20px;
   background: linear-gradient(180deg, hsl(253, 69%, 17%), #413ca8);
   padding: 2rem;
