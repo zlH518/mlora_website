@@ -27,18 +27,6 @@
             </div>
           </router-link>
         </li>
-        <li>
-          <router-link to="/ids-lab" class="btn">
-            <strong>IDs Lab</strong>
-            <div id="container-stars">
-              <div id="stars"></div>
-            </div>
-            <div id="glow">
-              <div class="circle"></div>
-              <div class="circle"></div>
-            </div>
-          </router-link>
-        </li>
       </ul>
     </nav>
 
