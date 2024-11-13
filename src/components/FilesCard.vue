@@ -171,7 +171,7 @@ export default defineComponent({
   background: linear-gradient(145deg, #1b1f3a, #111324);
   border-radius: 15px;
   padding: 1.5rem;
-  width: 150%;
+  width: 90%;
   color: #ffffff;
   box-shadow: 0 0 30px rgba(108, 99, 255, 0.4);
   border: 1px solid rgba(255, 255, 255, 0.1);
