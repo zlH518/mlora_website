@@ -23,3 +23,8 @@ declare module '@/src/utils/GeometricGlobeAnimation' {
 declare module '@/views/Card.vue' {
   export function defineComponent(container: HTMLElement): void
 }
+// Declare apiService module
+declare module '@/views/apiService' {
+  const apiService: any
+  export default apiService
+}
