@@ -9,96 +9,49 @@
           <div class="setting">
             <label><i class="fas fa-upload"></i> Upload File (POST /data or /prompt)</label>
             <p>Upload training data or prompt template files</p>
-            <input type="file" class="input-field" />
-            <select class="input-field">
-              <option value="train">Train Data</option>
+            <input type="file" @change="handleFileUpload" class="input-field" />
+            <select v-model="selectedFileType" class="input-field">
+              <option value="data">Data</option>
               <option value="prompt">Prompt Template</option>
             </select>
-            <input type="text" placeholder="File Name" class="input-field" />
-            <input type="text" placeholder="File Path" class="input-field" />
+            <input type="text" v-model="fileName" placeholder="File Name" class="input-field" />
+            <button @click="uploadFile" class="action-button">
+              <i class="fas fa-upload"></i> Upload File
+            </button>
           </div>
         </div>
 
         <!-- File List and Delete -->
         <div class="setting-row">
           <div class="setting">
-            <label><i class="fas fa-list"></i> File List (GET /data)</label>
+            <label><i class="fas fa-list"></i> File List (GET /data or /prompt)</label>
             <p>View uploaded files</p>
-            <button @click="fetchFiles" class="action-button">
+            <button @click="toggleFileList" class="action-button">
               <i class="fas fa-list"></i> List Files
             </button>
           </div>
           <div class="setting">
-            <label><i class="fas fa-trash"></i> Delete File (DELETE /data)</label>
+            <label><i class="fas fa-trash"></i> Delete File (DELETE /data or /prompt)</label>
             <p>Specify the file name to delete</p>
-            <input type="text" placeholder="File Name" class="input-field" />
+            <input type="text" v-model="fileToDelete" placeholder="File Name" class="input-field" />
             <button @click="deleteFile" class="action-button">
               <i class="fas fa-trash"></i> Delete File
             </button>
           </div>
         </div>
-      </div>
-    </div>
 
-    <!-- Dataset Management Card -->
-    <div class="management-card">
-      <h2>Dataset Management</h2>
-      <div class="settings-container">
-        <!-- Dataset Create -->
-        <div class="setting-row">
-          <div class="setting">
-            <label><i class="fas fa-database"></i> Create Dataset (POST /dataset)</label>
-            <p>Configure and create a new dataset</p>
-            <input type="text" placeholder="Dataset Name" class="input-field" />
-            <select class="input-field">
-              <option disabled selected>Select Train Data File</option>
-              <!-- Dynamically populate from file_data list -->
-            </select>
-            <select class="input-field">
-              <option disabled selected>Select Prompt Template File</option>
-              <!-- Dynamically populate from file_prompt list -->
-            </select>
-            <select class="input-field">
-              <option value="instruction">Instruction</option>
-              <option value="preference">Preference</option>
-              <option value="contrastive_instruction">Contrastive Instruction</option>
-            </select>
-            <select class="input-field">
-              <option value="default">Default</option>
-              <option value="shuffle">Shuffle</option>
-              <option value="sort">Sort</option>
-            </select>
-            <button @click="createDataset" class="action-button">
-              <i class="fas fa-plus"></i> Create Dataset
-            </button>
-          </div>
+        <!-- Display fetched files if showFileList is true -->
+        <div v-if="showFileList && fileList.length > 0">
+          <ul>
+            <li v-for="file in fileList" :key="file.name">
+              {{ file.name }}
+            </li>
+          </ul>
         </div>
 
-        <!-- Dataset List, Delete, and Showcase -->
-        <div class="setting-row">
-          <div class="setting">
-            <label><i class="fas fa-list"></i> Dataset List (GET /dataset)</label>
-            <p>View available datasets</p>
-            <button @click="fetchDatasets" class="action-button">
-              <i class="fas fa-list"></i> List Datasets
-            </button>
-          </div>
-          <div class="setting">
-            <label><i class="fas fa-trash"></i> Delete Dataset (DELETE /dataset)</label>
-            <p>Specify the dataset name to delete</p>
-            <input type="text" placeholder="Dataset Name" class="input-field" />
-            <button @click="deleteDataset" class="action-button">
-              <i class="fas fa-trash"></i> Delete Dataset
-            </button>
-          </div>
-          <div class="setting">
-            <label><i class="fas fa-eye"></i> Dataset Showcase (GET /showcase)</label>
-            <p>View details of a specific dataset</p>
-            <input type="text" placeholder="Dataset Name" class="input-field" />
-            <button @click="showcaseDataset" class="action-button">
-              <i class="fas fa-eye"></i> Showcase Dataset
-            </button>
-          </div>
+        <!-- Connection Status -->
+        <div v-if="statusMessage" class="status-message">
+          <p>{{ statusMessage }}</p>
         </div>
       </div>
     </div>
@@ -107,27 +60,101 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue'
+import axios from 'axios'
 
 export default defineComponent({
-  name: 'DatasetSettings',
+  name: 'FileSettings',
+  data() {
+    return {
+      selectedFileType: 'data', // Can be 'data' or 'prompt'
+      fileName: '',
+      fileToDelete: '',
+      fileList: [] as Array<{ name: string; file: string }>, // List to store files fetched from the backend
+      file: null as File | null, // The file to be uploaded
+      showFileList: false, // Flag to toggle file list visibility
+      statusMessage: '', // Message to display the connection status
+    }
+  },
   methods: {
-    fetchFiles() {
-      // API call to GET /data to list files
+    // Handle file selection for upload
+    handleFileUpload(event: Event) {
+      const input = event.target as HTMLInputElement
+      if (input.files?.length) {
+        this.file = input.files[0]
+      }
     },
-    deleteFile() {
-      // API call to DELETE /data with specified file name
+
+    // Fetch the list of files from the backend (GET /data or /prompt)
+    async fetchFiles() {
+      try {
+        const response = await axios.get(`/api/${this.selectedFileType}`)
+        this.fileList = response.data
+        this.statusMessage = `Successfully fetched ${this.selectedFileType} files.` // Success message
+        console.log('Fetched files:', response.data) // Debugging log
+      } catch (error) {
+        this.statusMessage = 'Error fetching files. Please check your connection.' // Error message
+        console.error('Error fetching files:', error) // Error log
+      }
     },
-    createDataset() {
-      // API call to POST /dataset with dataset creation parameters
+
+    // Toggle the file list visibility and fetch files if needed
+    async toggleFileList() {
+      this.showFileList = !this.showFileList
+      if (this.showFileList) {
+        await this.fetchFiles() // Fetch files only if we are showing the list
+      }
     },
-    fetchDatasets() {
-      // API call to GET /dataset to list datasets
+
+    // Upload a file to the backend (POST /data or /prompt)
+    async uploadFile() {
+      if (!this.file || !this.fileName) {
+        alert('Please select a file and provide a name')
+        return
+      }
+
+      const formData = new FormData()
+      formData.append('file', this.file)
+      formData.append('name', this.fileName)
+
+      try {
+        const response = await axios.post(`/api/${this.selectedFileType}`, formData, {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
+        })
+        this.statusMessage = `File uploaded successfully: ${this.fileName}` // Success message
+        alert(response.data.message)
+        console.log('File uploaded:', response.data) // Debugging log
+        this.fileName = '' // Reset file name
+        this.fetchFiles() // Refresh the file list
+      } catch (error) {
+        this.statusMessage = 'Error uploading file. Please try again.' // Error message
+        console.error('Error uploading file:', error) // Error log
+        alert('Failed to upload file')
+      }
     },
-    deleteDataset() {
-      // API call to DELETE /dataset with specified dataset name
-    },
-    showcaseDataset() {
-      // API call to GET /showcase with specified dataset name
+
+    // Delete a file (DELETE /data or /prompt)
+    async deleteFile() {
+      if (!this.fileToDelete) {
+        alert('Please provide the name of the file to delete')
+        return
+      }
+
+      try {
+        const response = await axios.delete(`/api/${this.selectedFileType}`, {
+          data: { name: this.fileToDelete },
+        })
+        this.statusMessage = `File deleted successfully: ${this.fileToDelete}` // Success message
+        alert(response.data.message)
+        console.log('File deleted:', response.data) // Debugging log
+        this.fileToDelete = '' // Reset the file name input
+        this.fetchFiles() // Refresh the file list
+      } catch (error) {
+        this.statusMessage = 'Error deleting file. Please try again.' // Error message
+        console.error('Error deleting file:', error) // Error log
+        alert('Failed to delete file')
+      }
     },
   },
 })
@@ -144,7 +171,7 @@ export default defineComponent({
   background: linear-gradient(145deg, #1b1f3a, #111324);
   border-radius: 15px;
   padding: 1.5rem;
-  width: 48%;
+  width: 150%;
   color: #ffffff;
   box-shadow: 0 0 30px rgba(108, 99, 255, 0.4);
   border: 1px solid rgba(255, 255, 255, 0.1);
