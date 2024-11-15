@@ -29,6 +29,13 @@
             <button @click="toggleFileList" class="action-button">
               <i class="fas fa-list"></i> List Files
             </button>
+
+            <!-- Dropdown for File List -->
+            <select v-if="showFileList && fileList.length > 0" class="dropdown">
+              <option v-for="file in fileList" :key="file.name" :value="file.name">
+                {{ file.name }}
+              </option>
+            </select>
           </div>
           <div class="setting">
             <label><i class="fas fa-trash"></i> Delete File (DELETE /data or /prompt)</label>
@@ -38,15 +45,6 @@
               <i class="fas fa-trash"></i> Delete File
             </button>
           </div>
-        </div>
-
-        <!-- Display fetched files if showFileList is true -->
-        <div v-if="showFileList && fileList.length > 0">
-          <ul>
-            <li v-for="file in fileList" :key="file.name">
-              {{ file.name }}
-            </li>
-          </ul>
         </div>
 
         <!-- Connection Status -->
@@ -88,12 +86,13 @@ export default defineComponent({
     async fetchFiles() {
       try {
         const response = await axios.get(`/api/${this.selectedFileType}`)
+
         this.fileList = response.data
-        this.statusMessage = `Successfully fetched ${this.selectedFileType} files.` // Success message
-        console.log('Fetched files:', response.data) // Debugging log
+        this.statusMessage = `Successfully fetched ${this.selectedFileType} files.`
+        console.log('Fetched files:', response.data)
       } catch (error) {
-        this.statusMessage = 'Error fetching files. Please check your connection.' // Error message
-        console.error('Error fetching files:', error) // Error log
+        this.statusMessage = 'Error fetching files. Please check your connection.'
+        console.error('Error fetching files:', error)
       }
     },
 
@@ -113,7 +112,7 @@ export default defineComponent({
       }
 
       const formData = new FormData()
-      formData.append('file', this.file)
+      formData.append('data_file', this.file) // Use 'data_file' as specified in the backend
       formData.append('name', this.fileName)
 
       try {
@@ -122,14 +121,15 @@ export default defineComponent({
             'Content-Type': 'multipart/form-data',
           },
         })
-        this.statusMessage = `File uploaded successfully: ${this.fileName}` // Success message
+
+        this.statusMessage = `File uploaded successfully: ${this.fileName}`
         alert(response.data.message)
-        console.log('File uploaded:', response.data) // Debugging log
+        console.log('File uploaded:', response.data)
         this.fileName = '' // Reset file name
         this.fetchFiles() // Refresh the file list
       } catch (error) {
-        this.statusMessage = 'Error uploading file. Please try again.' // Error message
-        console.error('Error uploading file:', error) // Error log
+        this.statusMessage = 'Error uploading file. Please try again.'
+        console.error('Error uploading file:', error)
         alert('Failed to upload file')
       }
     },
@@ -145,14 +145,15 @@ export default defineComponent({
         const response = await axios.delete(`/api/${this.selectedFileType}`, {
           data: { name: this.fileToDelete },
         })
-        this.statusMessage = `File deleted successfully: ${this.fileToDelete}` // Success message
+
+        this.statusMessage = `File deleted successfully: ${this.fileToDelete}`
         alert(response.data.message)
-        console.log('File deleted:', response.data) // Debugging log
+        console.log('File deleted:', response.data)
         this.fileToDelete = '' // Reset the file name input
         this.fetchFiles() // Refresh the file list
       } catch (error) {
-        this.statusMessage = 'Error deleting file. Please try again.' // Error message
-        console.error('Error deleting file:', error) // Error log
+        this.statusMessage = 'Error deleting file. Please try again.'
+        console.error('Error deleting file:', error)
         alert('Failed to delete file')
       }
     },
@@ -219,7 +220,7 @@ export default defineComponent({
   background-color: #2a2f3b;
   border: none;
   border-radius: 5px;
-  padding: 10px; /* Increased padding for touch comfort */
+  padding: 10px;
   color: #ffffff;
   font-size: 0.95rem;
   margin-bottom: 0.5rem;
@@ -240,6 +241,17 @@ export default defineComponent({
   transition:
     background-color 0.2s ease,
     box-shadow 0.2s ease;
+}
+
+.dropdown {
+  margin-top: 0.5rem;
+  width: 100%;
+  padding: 0.5rem;
+  background-color: #2a2f3b;
+  color: #ffffff;
+  border: none;
+  border-radius: 5px;
+  font-size: 0.95rem;
 }
 
 .action-button:hover {

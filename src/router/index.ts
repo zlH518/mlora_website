@@ -1,7 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import LandingPage from '../views/LandingPage.vue'
 import TeamPage from '../views/TeamPage.vue'
-import IDSLabPage from '../views/IDSLabPage.vue'
 
 const routes = [
   {
@@ -13,11 +12,6 @@ const routes = [
     path: '/team',
     name: 'Team',
     component: TeamPage,
-  },
-  {
-    path: '/ids-lab',
-    name: 'IDSLab',
-    component: IDSLabPage,
   },
 ]
 
