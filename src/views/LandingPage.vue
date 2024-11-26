@@ -13,37 +13,40 @@
       </div>
     </div>
 
-    <!-- Glowing Box with Files Card -->
+    <!-- Glowing Box with Cards -->
     <div class="glowing-box">
-      <FilesCard />
+      <FilesCard class="card" />
+      <DatasetCard class="card" />
     </div>
   </div>
 </template>
 
 <script lang="ts">
-import { defineComponent, onMounted, ref } from 'vue'
-import { initGlowingGlobe } from '@/utils/GlowingGlobe'
-import FilesCard from '@/components/FilesCard.vue' // Import FilesCard component
+import { defineComponent, onMounted, ref } from 'vue';
+import { initGlowingGlobe } from '@/utils/GlowingGlobe';
+import FilesCard from '@/components/FilesCard.vue'; // Import FilesCard component
+import DatasetCard from '@/components/DatasetCard.vue'; // Import DatasetCard component
 
 export default defineComponent({
   name: 'LandingPage',
   components: {
     FilesCard, // Register FilesCard component
+    DatasetCard, // Register DatasetCard component
   },
   setup() {
-    const globeContainer = ref<HTMLElement | null>(null)
+    const globeContainer = ref<HTMLElement | null>(null);
 
     onMounted(() => {
       if (globeContainer.value) {
-        initGlowingGlobe(globeContainer.value)
+        initGlowingGlobe(globeContainer.value);
       }
-    })
+    });
 
     return {
       globeContainer,
-    }
+    };
   },
-})
+});
 </script>
 
 <style scoped>
@@ -64,7 +67,7 @@ export default defineComponent({
 
 .globe-container {
   position: absolute;
-  top: 60%;
+  top: 60%; /* Center the globe relative to the page */
   left: 50%;
   transform: translate(-50%, -50%);
   width: 800px;
@@ -111,20 +114,28 @@ export default defineComponent({
 
 .glowing-box {
   display: flex;
-  align-items: flex-start; /* Align items to the top */
-  justify-content: flex-start; /* Align items to the left */
-  flex-wrap: wrap;
-  gap: 1.5rem;
+  flex-direction: column; /* Stack the cards vertically */
+  align-items: center;
+  gap: 1.5rem; /* Space between cards */
   position: absolute;
-  top: 187%; /* Adjust to align the box with llama's stomach */
+  top: 230%; /* Align glowing box with llama's stomach */
   left: 50%;
   transform: translate(-50%, -50%);
   width: 1200px;
-  height: 2000px;
   border-radius: 20px;
   background: linear-gradient(180deg, hsl(253, 69%, 17%), #413ca8);
   padding: 2rem;
   box-shadow: 0 0 20px rgba(108, 99, 255, 0.4);
   z-index: 3;
+}
+
+.card {
+  background-color: #1b1f3a;
+  border-radius: 15px;
+  padding: 1.5rem;
+  width: 100%;
+  max-width: 900px; /* Ensure consistent width for all cards */
+  box-shadow: 0 0 15px rgba(108, 99, 255, 0.4);
+  border: 1px solid rgba(255, 255, 255, 0.1);
 }
 </style>
