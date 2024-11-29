@@ -4,7 +4,7 @@
 
     <!-- Upload File -->
     <div class="section">
-      <h3>Upload File (POST /data or /prompt)</h3>
+      <h3>Upload File </h3>
       <input type="file" @change="handleFileUpload" class="input-field" />
       <select v-model="selectedFileType" class="input-field">
         <option value="data">Data</option>
@@ -21,7 +21,7 @@
 
     <!-- Fetch Files -->
     <div class="section">
-      <h3>View Uploaded Files (GET /data or /prompt)</h3>
+      <h3>View Uploaded Files </h3>
       <button @click="fetchFiles" class="action-button">List Files</button>
       <ul v-if="fileList.length">
         <li v-for="(file, index) in fileList" :key="index">{{ file.name }}</li>
@@ -30,7 +30,7 @@
 
     <!-- Delete File -->
     <div class="section">
-      <h3>Delete File (DELETE /data or /prompt)</h3>
+      <h3>Delete File </h3>
       <input
         type="text"
         v-model="fileToDelete"
