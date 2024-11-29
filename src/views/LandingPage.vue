@@ -26,18 +26,18 @@
 <script lang="ts">
 import { defineComponent, onMounted, ref } from 'vue';
 import { initGlowingGlobe } from '@/utils/GlowingGlobe';
-import FilesCard from '@/components/FilesCard.vue'; // Import FilesCard component
-import DatasetCard from '@/components/DatasetCard.vue'; // Import DatasetCard component
-import AdapterCard from '@/components/AdapterCard.vue'; // Import AdapterCard component
-import TaskCard from '@/components/TaskCard.vue'; // Import TaskCard component
+import FilesCard from '@/components/FilesCard.vue';
+import DatasetCard from '@/components/DatasetCard.vue';
+import AdapterCard from '@/components/AdapterCard.vue';
+import TaskCard from '@/components/TaskCard.vue';
 
 export default defineComponent({
   name: 'LandingPage',
   components: {
-    FilesCard, // Register FilesCard component
-    DatasetCard, // Register DatasetCard component
-    AdapterCard, // Register AdapterCard component
-    TaskCard, // Register TaskCard component
+    FilesCard,
+    DatasetCard,
+    AdapterCard,
+    TaskCard,
   },
   setup() {
     const globeContainer = ref<HTMLElement | null>(null);
@@ -124,7 +124,7 @@ export default defineComponent({
   align-items: center;
   gap: 1.5rem; /* Space between cards */
   position: absolute;
-  top: 273%; /* Align glowing box with llama's stomach */
+  top: 273%; /* Align glowing box with llama */
   left: 50%;
   transform: translate(-50%, -50%);
   width: 1200px;
@@ -140,7 +140,7 @@ export default defineComponent({
   border-radius: 15px;
   padding: 1.5rem;
   width: 100%;
-  max-width: 900px; /* Ensure consistent width for all cards */
+  max-width: 900px; /*  width for all cards */
   box-shadow: 0 0 15px rgba(108, 99, 255, 0.4);
   border: 1px solid rgba(255, 255, 255, 0.1);
 }
