@@ -17,6 +17,8 @@
     <div class="glowing-box">
       <FilesCard class="card" />
       <DatasetCard class="card" />
+      <AdapterCard class="card" />
+      <TaskCard class="card" />
     </div>
   </div>
 </template>
@@ -26,12 +28,16 @@ import { defineComponent, onMounted, ref } from 'vue';
 import { initGlowingGlobe } from '@/utils/GlowingGlobe';
 import FilesCard from '@/components/FilesCard.vue'; // Import FilesCard component
 import DatasetCard from '@/components/DatasetCard.vue'; // Import DatasetCard component
+import AdapterCard from '@/components/AdapterCard.vue'; // Import AdapterCard component
+import TaskCard from '@/components/TaskCard.vue'; // Import TaskCard component
 
 export default defineComponent({
   name: 'LandingPage',
   components: {
     FilesCard, // Register FilesCard component
     DatasetCard, // Register DatasetCard component
+    AdapterCard, // Register AdapterCard component
+    TaskCard, // Register TaskCard component
   },
   setup() {
     const globeContainer = ref<HTMLElement | null>(null);
@@ -118,7 +124,7 @@ export default defineComponent({
   align-items: center;
   gap: 1.5rem; /* Space between cards */
   position: absolute;
-  top: 230%; /* Align glowing box with llama's stomach */
+  top: 273%; /* Align glowing box with llama's stomach */
   left: 50%;
   transform: translate(-50%, -50%);
   width: 1200px;
