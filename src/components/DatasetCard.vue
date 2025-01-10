@@ -4,7 +4,7 @@
 
     <!-- Create Dataset -->
     <div class="section">
-      <h3>Create Dataset (POST /dataset)</h3>
+      <h3>Create Dataset</h3>
       <input
         type="text"
         v-model="datasetName"
@@ -38,18 +38,19 @@
 
     <!-- Fetch Datasets -->
     <div class="section">
-      <h3>View Datasets (GET /dataset)</h3>
+      <h3>View Datasets</h3>
       <button @click="fetchDatasets" class="action-button">Fetch Datasets</button>
       <ul v-if="datasets.length">
         <li v-for="(dataset, index) in datasets" :key="index">
-          {{ dataset }}
+          Name: {{ dataset.name }}, Data: {{ dataset.data_name }}, Prompt: {{ dataset.prompt_name }}
         </li>
       </ul>
+      <p v-else>No datasets available.</p>
     </div>
 
     <!-- Delete Dataset -->
     <div class="section">
-      <h3>Delete Dataset (DELETE /dataset)</h3>
+      <h3>Delete Dataset</h3>
       <input
         type="text"
         v-model="datasetToDelete"
@@ -73,11 +74,12 @@ export default {
       promptName: "",
       promptType: "instruction",
       preprocess: "default",
-      datasets: [],
-      datasetToDelete: "",
+      datasets: [], // Array to hold fetched datasets
+      datasetToDelete: "", // Dataset to delete
     };
   },
   methods: {
+    // Create a new dataset
     async createDataset() {
       try {
         await apiClient.post("/dataset", {
@@ -88,21 +90,26 @@ export default {
           preprocess: this.preprocess,
         });
         alert("Dataset created successfully!");
-        this.fetchDatasets();
+        this.fetchDatasets(); // Refresh datasets list
       } catch (error) {
         console.error("Error creating dataset:", error);
         alert("Failed to create dataset.");
       }
     },
+
+    // Fetch datasets from the backend
     async fetchDatasets() {
       try {
         const response = await apiClient.get("/dataset");
-        this.datasets = response.data.map((d) => d.name);
+        console.log("Fetched datasets:", response.data); // Debugging
+        this.datasets = response.data; // Assign full response to datasets
       } catch (error) {
         console.error("Error fetching datasets:", error);
         alert("Failed to fetch datasets.");
       }
     },
+
+    // Delete a dataset by name
     async deleteDataset() {
       if (!this.datasetToDelete) {
         alert("Please provide the dataset name to delete.");
@@ -111,7 +118,7 @@ export default {
       try {
         await apiClient.delete("/dataset", { data: { name: this.datasetToDelete } });
         alert("Dataset deleted successfully!");
-        this.fetchDatasets();
+        this.fetchDatasets(); // Refresh datasets list
       } catch (error) {
         console.error("Error deleting dataset:", error);
         alert("Failed to delete dataset.");

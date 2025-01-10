@@ -4,7 +4,7 @@
 
     <!-- Create Task -->
     <div class="section">
-      <h3>Create Task (POST /task)</h3>
+      <h3>Create Task </h3>
       <label class="label" for="taskName">Task Name</label>
       <input
         type="text"
@@ -125,7 +125,7 @@
 
     <!-- Delete Task -->
     <div class="section">
-      <h3>Delete Task (DELETE /task)</h3>
+      <h3>Delete Task </h3>
       <label class="label" for="taskToDelete">Task Name to Delete</label>
       <input
         type="text"

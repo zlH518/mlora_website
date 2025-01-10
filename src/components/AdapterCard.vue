@@ -4,7 +4,7 @@
 
     <!-- Create Adapter -->
     <div class="section">
-      <h3>Create Adapter (POST /adapter)</h3>
+      <h3>Create Adapter</h3>
       <label class="label" for="adapterName">Adapter Name</label>
       <input
         type="text"
@@ -67,18 +67,20 @@
 
     <!-- Fetch Adapters -->
     <div class="section">
-      <h3>View Adapters (GET /adapter)</h3>
+      <h3>View Adapters</h3>
       <button @click="fetchAdapters" class="action-button">List Adapters</button>
       <ul v-if="adapters.length">
         <li v-for="(adapter, index) in adapters" :key="index">
-          {{ adapter.name }} - {{ adapter.type }}
+          Name: {{ adapter.name }}, Type: {{ adapter.type }}, Optimizer: {{ adapter.optimizer }},
+          Learning Rate: {{ adapter.lr }}
         </li>
       </ul>
+      <p v-else>No adapters available.</p>
     </div>
 
     <!-- Delete Adapter -->
     <div class="section">
-      <h3>Delete Adapter (DELETE /adapter)</h3>
+      <h3>Delete Adapter</h3>
       <label class="label" for="adapterToDelete">Adapter Name to Delete</label>
       <input
         type="text"
@@ -108,16 +110,17 @@ export default {
       alpha: 64,
       dropout: 0.05,
       adapterToDelete: "",
-      adapters: [],
+      adapters: [], // Array to hold fetched adapters
     };
   },
   methods: {
+    // Create a new adapter
     async createAdapter() {
       const payload = {
         name: this.adapterName,
         type: this.adapterType,
         optimizer: this.optimizer,
-        "learning rate": this.learningRate,
+        lr: this.learningRate,
         "Need learning rate schedule": this.scheduler === "cosine" ? "yes" : "no",
         rank: this.rank,
         alpha: this.alpha,
@@ -146,16 +149,23 @@ export default {
         this.fetchAdapters(); // Refresh the adapter list
       } catch (error) {
         console.error("Error creating adapter:", error);
+        alert("Failed to create adapter.");
       }
     },
+
+    // Fetch adapters from the backend
     async fetchAdapters() {
       try {
         const response = await apiClient.get("/adapter");
-        this.adapters = response.data;
+        console.log("Fetched adapters:", response.data); // Debugging
+        this.adapters = response.data; // Assign full response to adapters
       } catch (error) {
         console.error("Error fetching adapters:", error);
+        alert("Failed to fetch adapters.");
       }
     },
+
+    // Delete an adapter by name
     async deleteAdapter() {
       if (!this.adapterToDelete) {
         alert("Please provide the name of the adapter to delete.");
@@ -170,6 +180,7 @@ export default {
         this.fetchAdapters(); // Refresh the adapter list
       } catch (error) {
         console.error("Error deleting adapter:", error);
+        alert("Failed to delete adapter.");
       }
     },
   },
