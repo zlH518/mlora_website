@@ -40,12 +40,41 @@
     <div class="section">
       <h3>View Datasets</h3>
       <button @click="fetchDatasets" class="action-button">Fetch Datasets</button>
-      <ul v-if="datasets.length">
-        <li v-for="(dataset, index) in datasets" :key="index">
-          Name: {{ dataset.name }}, Data: {{ dataset.data_name }}, Prompt: {{ dataset.prompt_name }}
-        </li>
-      </ul>
+      <table v-if="datasets.length && showTable" class="datasets-table">
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Data Name</th>
+            <th>Prompt Name</th>
+            <th>Prompt Type</th>
+            <th>Preprocess</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr v-for="(dataset, index) in datasets" :key="index">
+            <td>{{ dataset.name }}</td>
+            <td>{{ dataset.data_name }}</td>
+            <td>{{ dataset.prompt_name }}</td>
+            <td>{{ dataset.prompt_type }}</td>
+            <td>{{ dataset.preprocess }}</td>
+          </tr>
+        </tbody>
+      </table>
       <p v-else>No datasets available.</p>
+    </div>
+
+    <!-- Showcase Dataset -->
+    <div class="section">
+      <h3>Dataset Showcase</h3>
+      <input
+        type="text"
+        v-model="showcaseDatasetName"
+        placeholder="Enter Dataset Name"
+        class="input-field"
+      />
+      <button @click="showcaseDataset" class="action-button">Showcase Dataset</button>
+      <pre v-if="showcaseData">{{ showcaseData }}</pre>
+      <p v-else>No data to showcase.</p>
     </div>
 
     <!-- Delete Dataset -->
@@ -63,23 +92,25 @@
 </template>
 
 <script>
-import apiClient from "@/axios.js"; // Import Axios instance
+import apiClient from "@/axios.js";
 
 export default {
   name: "DatasetCard",
   data() {
     return {
+      showTable: false,
       datasetName: "",
       dataName: "",
       promptName: "",
       promptType: "instruction",
       preprocess: "default",
-      datasets: [], // Array to hold fetched datasets
-      datasetToDelete: "", // Dataset to delete
+      datasets: [],
+      datasetToDelete: "",
+      showcaseDatasetName: "",
+      showcaseData: null,
     };
   },
   methods: {
-    // Create a new dataset
     async createDataset() {
       try {
         await apiClient.post("/dataset", {
@@ -90,26 +121,44 @@ export default {
           preprocess: this.preprocess,
         });
         alert("Dataset created successfully!");
-        this.fetchDatasets(); // Refresh datasets list
+        this.fetchDatasets(); // Refresh table after creation
       } catch (error) {
         console.error("Error creating dataset:", error);
         alert("Failed to create dataset.");
       }
     },
-
-    // Fetch datasets from the backend
     async fetchDatasets() {
       try {
         const response = await apiClient.get("/dataset");
-        console.log("Fetched datasets:", response.data); // Debugging
-        this.datasets = response.data; // Assign full response to datasets
+        const parsedDatasets = response.data.map(datasetString => JSON.parse(datasetString));
+        console.log(parsedDatasets); 
+        this.datasets = parsedDatasets; 
+        this.showTable = this.datasets.length > 0; // Only show table if data exists
+        console.log(this.datasets); // Debugging response
       } catch (error) {
         console.error("Error fetching datasets:", error);
-        alert("Failed to fetch datasets.");
+        alert("Failed to fetch datasets. Please check the backend connection.");
       }
     },
-
-    // Delete a dataset by name
+    async showcaseDataset() {
+      if (!this.showcaseDatasetName) {
+        alert("Please provide a dataset name to showcase.");
+        return;
+      }
+      try {
+        const response = await apiClient.get(`/showcase`, {
+          params: { name: this.showcaseDatasetName },
+        });
+        if (response.data.example && response.data.example.length > 0) {
+          this.showcaseData = response.data.example[0];
+        } else {
+          this.showcaseData = "No data to showcase.";
+        }
+      } catch (error) {
+        console.error("Error showcasing dataset:", error);
+        alert("Failed to showcase dataset.");
+      }
+    },
     async deleteDataset() {
       if (!this.datasetToDelete) {
         alert("Please provide the dataset name to delete.");
@@ -118,12 +167,27 @@ export default {
       try {
         await apiClient.delete("/dataset", { data: { name: this.datasetToDelete } });
         alert("Dataset deleted successfully!");
-        this.fetchDatasets(); // Refresh datasets list
+        this.fetchDatasets(); // Refresh table after deletion
       } catch (error) {
         console.error("Error deleting dataset:", error);
         alert("Failed to delete dataset.");
       }
     },
+  },
+  startDatasetPolling() {
+    this.datasetPollingInterval = setInterval(this.fetchDatasets, 10000); // Poll every 5 seconds
+  },
+  stopDatasetPolling() {
+    if (this.datasetPollingInterval) {
+      clearInterval(this.datasetPollingInterval);
+      this.datasetPollingInterval = null;
+    }
+  },
+  async mounted() {
+    this.startDatasetPolling();
+  },
+  beforeDestroy() {
+    this.stopDatasetPolling();
   },
 };
 </script>
@@ -135,7 +199,7 @@ export default {
   padding: 1.5rem;
   color: #fff;
   width: 100%;
-  max-width: 400px;
+  max-width: 900px;
   margin: 1rem;
   box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
 }
@@ -168,4 +232,54 @@ export default {
 .action-button:hover {
   background: #5147d7;
 }
+
+/* Styling for the table */
+.datasets-table {
+  width: 100%;
+  margin-top: 1rem;
+  border-collapse: collapse;
+  background: #2a2a54;
+  color: #fff;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.datasets-table th,
+.datasets-table td {
+  padding: 0.75rem 1rem;
+  text-align: center;
+  border-bottom: 1px solid #444;
+}
+
+.datasets-table th {
+  background: #333a56;
+  font-weight: bold;
+}
+
+.datasets-table tr:hover {
+  background: #444b6e;
+}
+
+.datasets-table tr:nth-child(even) {
+  background: #2a2a54;
+}
+
+.datasets-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.datasets-table td {
+  font-size: 0.9rem;
+}
+
+
+
+pre {
+  white-space: pre-wrap; /* 自动换行 */
+  word-wrap: break-word; /* 强制长单词换行 */
+  word-break: break-all; /* 强制中英文都换行 */
+  max-width: 100%; /* 确保文本不会超出容器宽度 */
+  font-family: 'Courier New', monospace; /* Monospace font for preformatted text */
+}
+
 </style>

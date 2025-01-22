@@ -124,7 +124,7 @@ export default defineComponent({
   align-items: center;
   gap: 1.5rem; /* Space between cards */
   position: absolute;
-  top: 273%; /* Align glowing box with llama */
+  top: 291%; /* Align glowing box with llama */
   left: 50%;
   transform: translate(-50%, -50%);
   width: 1200px;
